@@ -266,7 +266,7 @@ mpg
 ## Reshuffle #3
 
 - What is your work experience?
-- Find a new group of 2-3 people with a mix of R experience
+- Find a new group of 2-3 people with a mix of work experience
 - Introduce yourselves
 
 ## Data Structures
