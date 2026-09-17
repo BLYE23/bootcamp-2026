@@ -1,6 +1,6 @@
 # 2026 MLDS Boot Camp
 
-This GitHub repo contains materials for the technical sessions of the boot camp.
+This GitHub repo contains materials for the technical sessions of the boot camp. HI
 
 | Date | Session | Description   | Resources |
 |------|---------|---------------|---------------|
