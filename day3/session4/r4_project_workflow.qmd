@@ -148,11 +148,8 @@ library(tidyverse)
 
 raw <- read_csv("data/raw/country_attributes.csv")
 
-raw <- read_csv("data/raw/country_attributes.csv",
-                na = c("", "NA"))
+head(raw)
 ```
-
-- `na = c("", "NA")` treats blank cells **and** the literal text `"NA"` as missing — both show up in this file
 
 ## EXERCISE: Inspect the Raw Data
 

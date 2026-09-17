@@ -380,12 +380,19 @@ Alice Zhao
 <span id="cb2-2"><a href=""></a></span>
 <span id="cb2-3"><a href=""></a>raw <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/raw/country_attributes.csv"</span>)</span>
 <span id="cb2-4"><a href=""></a></span>
-<span id="cb2-5"><a href=""></a>raw <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/raw/country_attributes.csv"</span>,</span>
-<span id="cb2-6"><a href=""></a>                <span class="at">na =</span> <span class="fu">c</span>(<span class="st">""</span>, <span class="st">"NA"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-5"><a href=""></a><span class="fu">head</span>(raw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+  country     land_area_km2 latitude climate_zone
+  &lt;chr&gt;               &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;       
+1 Afghanistan        652860     33.9 Arid        
+2 Albania             27400     41.2 Temperate   
+3 Algeria           2381740     28   Arid        
+4 Angola            1246700    -11.2 Tropical    
+5 Argentina         2736690    -38.4 Temperate   
+6 Australia         7692024    -25.3 Arid        </code></pre>
 </div>
-<ul>
-<li class="fragment"><code>na = c("", "NA")</code> treats blank cells <strong>and</strong> the literal text <code>"NA"</code> as missing — both show up in this file</li>
-</ul>
+</div>
 </section>
 <section id="exercise-inspect-the-raw-data" class="slide level2">
 <h2>EXERCISE: Inspect the Raw Data</h2>
@@ -401,7 +408,7 @@ Alice Zhao
 <section id="solution-inspect-the-raw-data" class="slide level2">
 <h2>SOLUTION: Inspect the Raw Data</h2>
 <div class="cell" style="font-size:0.9em">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="fu">glimpse</span>(raw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="fu">glimpse</span>(raw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 67
 Columns: 4
@@ -410,11 +417,11 @@ $ land_area_km2 &lt;dbl&gt; 652860, 27400, 2381740, 1246700, 2736690, 7692024, 8
 $ latitude      &lt;dbl&gt; 33.9, 41.2, 28.0, -11.2, -38.4, -25.3, 47.5, 23.7, 50.5,…
 $ climate_zone  &lt;chr&gt; "Arid", "Temperate", "Arid", "Tropical", "Temperate", "A…</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="fu">sum</span>(<span class="fu">duplicated</span>(raw))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="fu">sum</span>(<span class="fu">duplicated</span>(raw))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="fu">n_distinct</span>(raw<span class="sc">$</span>country)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">n_distinct</span>(raw<span class="sc">$</span>country)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 66</code></pre>
 </div>
@@ -448,11 +455,11 @@ $ climate_zone  &lt;chr&gt; "Arid", "Temperate", "Arid", "Tropical", "Temperate"
 <section id="solution-trim-standardize-case" class="slide level2">
 <h2>SOLUTION: Trim &amp; Standardize Case</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a>formatted <span class="ot">&lt;-</span> raw <span class="sc">|&gt;</span></span>
-<span id="cb9-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb9-3"><a href=""></a>    <span class="at">country =</span> <span class="fu">str_trim</span>(country),</span>
-<span id="cb9-4"><a href=""></a>    <span class="at">country =</span> <span class="fu">str_to_title</span>(country)</span>
-<span id="cb9-5"><a href=""></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a>formatted <span class="ot">&lt;-</span> raw <span class="sc">|&gt;</span></span>
+<span id="cb10-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb10-3"><a href=""></a>    <span class="at">country =</span> <span class="fu">str_trim</span>(country),</span>
+<span id="cb10-4"><a href=""></a>    <span class="at">country =</span> <span class="fu">str_to_title</span>(country)</span>
+<span id="cb10-5"><a href=""></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="step-1b-fix-typos-alt-names" class="slide level2">
@@ -488,14 +495,14 @@ $ climate_zone  &lt;chr&gt; "Arid", "Temperate", "Arid", "Tropical", "Temperate"
 <section id="solution-map-the-known-typos" class="slide level2">
 <h2>SOLUTION: Map the Known Typos</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a>clean_names <span class="ot">&lt;-</span> formatted <span class="sc">|&gt;</span></span>
-<span id="cb10-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb10-3"><a href=""></a>    <span class="at">country =</span> <span class="fu">case_when</span>(</span>
-<span id="cb10-4"><a href=""></a>      country <span class="sc">==</span> <span class="st">"Usa"</span>    <span class="sc">~</span> <span class="st">"United States"</span>,</span>
-<span id="cb10-5"><a href=""></a>      country <span class="sc">==</span> <span class="st">"Brasil"</span> <span class="sc">~</span> <span class="st">"Brazil"</span>,</span>
-<span id="cb10-6"><a href=""></a>      <span class="at">.default =</span> country</span>
-<span id="cb10-7"><a href=""></a>    )</span>
-<span id="cb10-8"><a href=""></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a>clean_names <span class="ot">&lt;-</span> formatted <span class="sc">|&gt;</span></span>
+<span id="cb11-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb11-3"><a href=""></a>    <span class="at">country =</span> <span class="fu">case_when</span>(</span>
+<span id="cb11-4"><a href=""></a>      country <span class="sc">==</span> <span class="st">"Usa"</span>    <span class="sc">~</span> <span class="st">"United States"</span>,</span>
+<span id="cb11-5"><a href=""></a>      country <span class="sc">==</span> <span class="st">"Brasil"</span> <span class="sc">~</span> <span class="st">"Brazil"</span>,</span>
+<span id="cb11-6"><a href=""></a>      <span class="at">.default =</span> country</span>
+<span id="cb11-7"><a href=""></a>    )</span>
+<span id="cb11-8"><a href=""></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="step-1c-duplicates" class="slide level2">
@@ -506,7 +513,7 @@ $ climate_zone  &lt;chr&gt; "Arid", "Temperate", "Arid", "Tropical", "Temperate"
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a>clean_names <span class="sc">|&gt;</span> <span class="fu">filter</span>(country <span class="sc">==</span> <span class="st">"Canada"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a>clean_names <span class="sc">|&gt;</span> <span class="fu">filter</span>(country <span class="sc">==</span> <span class="st">"Canada"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 4
   country land_area_km2 latitude climate_zone
@@ -527,9 +534,9 @@ $ climate_zone  &lt;chr&gt; "Arid", "Temperate", "Arid", "Tropical", "Temperate"
 <section id="solution-remove-duplicates" class="slide level2">
 <h2>SOLUTION: Remove Duplicates</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a>cleaned <span class="ot">&lt;-</span> clean_names <span class="sc">|&gt;</span> <span class="fu">distinct</span>()</span>
-<span id="cb13-2"><a href=""></a></span>
-<span id="cb13-3"><a href=""></a><span class="fu">write_csv</span>(cleaned, <span class="st">"data/processed/country_attributes_clean.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a>cleaned <span class="ot">&lt;-</span> clean_names <span class="sc">|&gt;</span> <span class="fu">distinct</span>()</span>
+<span id="cb14-2"><a href=""></a></span>
+<span id="cb14-3"><a href=""></a><span class="fu">write_csv</span>(cleaned, <span class="st">"data/processed/country_attributes_clean.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><br></p>
 <ul>
@@ -570,11 +577,11 @@ $ climate_zone  &lt;chr&gt; "Arid", "Temperate", "Arid", "Tropical", "Temperate"
 <h2>Our current data</h2>
 <p>We have two clean files:</p>
 <div class="cell" style="font-size:0.9em">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a>gapminder <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/raw/gapminder.csv"</span>)</span>
-<span id="cb14-2"><a href=""></a>attr_clean <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/processed/country_attributes_clean.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a>gapminder <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/raw/gapminder.csv"</span>)</span>
+<span id="cb15-2"><a href=""></a>attr_clean <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/processed/country_attributes_clean.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell" style="font-size:0.9em">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a><span class="fu">head</span>(gapminder, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="fu">head</span>(gapminder, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 6
   country      year      pop continent lifeExp gdpPercap
@@ -583,7 +590,7 @@ $ climate_zone  &lt;chr&gt; "Arid", "Temperate", "Arid", "Tropical", "Temperate"
 2 Afghanistan  1957  9240934 Asia         30.3      821.
 3 Afghanistan  1962 10267083 Asia         32.0      853.</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a><span class="fu">head</span>(attr_clean, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a><span class="fu">head</span>(attr_clean, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 4
   country     land_area_km2 latitude climate_zone
@@ -618,23 +625,23 @@ $ climate_zone  &lt;chr&gt; "Arid", "Temperate", "Arid", "Tropical", "Temperate"
 <section id="solution-filter" class="slide level2">
 <h2>SOLUTION: Filter</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb19-2"><a href=""></a></span>
-<span id="cb19-3"><a href=""></a>gapminder <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/raw/gapminder.csv"</span>)</span>
-<span id="cb19-4"><a href=""></a>attr_clean <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/processed/country_attributes_clean.csv"</span>)</span>
-<span id="cb19-5"><a href=""></a></span>
-<span id="cb19-6"><a href=""></a>gapminder_2007 <span class="ot">&lt;-</span> gapminder <span class="sc">|&gt;</span></span>
-<span id="cb19-7"><a href=""></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2007</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb20-2"><a href=""></a></span>
+<span id="cb20-3"><a href=""></a>gapminder <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/raw/gapminder.csv"</span>)</span>
+<span id="cb20-4"><a href=""></a>attr_clean <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/processed/country_attributes_clean.csv"</span>)</span>
+<span id="cb20-5"><a href=""></a></span>
+<span id="cb20-6"><a href=""></a>gapminder_2007 <span class="ot">&lt;-</span> gapminder <span class="sc">|&gt;</span></span>
+<span id="cb20-7"><a href=""></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2007</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="solution-filter-1" class="slide level2">
 <h2>SOLUTION: Filter</h2>
 <div class="cell" style="font-size:0.9em">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a><span class="fu">nrow</span>(gapminder_2007)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a><span class="fu">nrow</span>(gapminder_2007)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 142</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href=""></a><span class="fu">head</span>(gapminder_2007, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a><span class="fu">head</span>(gapminder_2007, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 6
   country      year      pop continent lifeExp gdpPercap
@@ -642,11 +649,11 @@ $ climate_zone  &lt;chr&gt; "Arid", "Temperate", "Arid", "Tropical", "Temperate"
 1 Afghanistan  2007 31889923 Asia         43.8      975.
 2 Albania      2007  3600523 Europe       76.4     5937.</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href=""></a><span class="fu">nrow</span>(attr_clean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a><span class="fu">nrow</span>(attr_clean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 66</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a><span class="fu">head</span>(attr_clean, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a><span class="fu">head</span>(attr_clean, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 4
   country     land_area_km2 latitude climate_zone
@@ -675,14 +682,14 @@ $ climate_zone  &lt;chr&gt; "Arid", "Temperate", "Arid", "Tropical", "Temperate"
 <section id="solution-join" class="slide level2">
 <h2>SOLUTION: Join</h2>
 <div class="cell" style="font-size:0.9em">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a>joined <span class="ot">&lt;-</span> gapminder_2007 <span class="sc">|&gt;</span></span>
-<span id="cb28-2"><a href=""></a>  <span class="fu">left_join</span>(attr_clean, <span class="at">by =</span> <span class="st">"country"</span>)</span>
-<span id="cb28-3"><a href=""></a></span>
-<span id="cb28-4"><a href=""></a><span class="fu">nrow</span>(joined)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href=""></a>joined <span class="ot">&lt;-</span> gapminder_2007 <span class="sc">|&gt;</span></span>
+<span id="cb29-2"><a href=""></a>  <span class="fu">left_join</span>(attr_clean, <span class="at">by =</span> <span class="st">"country"</span>)</span>
+<span id="cb29-3"><a href=""></a></span>
+<span id="cb29-4"><a href=""></a><span class="fu">nrow</span>(joined)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 142</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href=""></a><span class="fu">head</span>(joined, <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href=""></a><span class="fu">head</span>(joined, <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 9
    country      year      pop continent lifeExp gdpPercap land_area_km2 latitude
@@ -716,11 +723,11 @@ $ climate_zone  &lt;chr&gt; "Arid", "Temperate", "Arid", "Tropical", "Temperate"
 <section id="solution-add-derived-columns" class="slide level2">
 <h2>SOLUTION: Add Derived Columns</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href=""></a>joined <span class="ot">&lt;-</span> joined <span class="sc">|&gt;</span></span>
-<span id="cb32-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb32-3"><a href=""></a>    <span class="at">dist_from_equator =</span> <span class="fu">abs</span>(latitude))</span>
-<span id="cb32-4"><a href=""></a></span>
-<span id="cb32-5"><a href=""></a><span class="fu">head</span>(joined <span class="sc">|&gt;</span> <span class="fu">select</span>(country, lifeExp, latitude, dist_from_equator))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href=""></a>joined <span class="ot">&lt;-</span> joined <span class="sc">|&gt;</span></span>
+<span id="cb33-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb33-3"><a href=""></a>    <span class="at">dist_from_equator =</span> <span class="fu">abs</span>(latitude))</span>
+<span id="cb33-4"><a href=""></a></span>
+<span id="cb33-5"><a href=""></a><span class="fu">head</span>(joined <span class="sc">|&gt;</span> <span class="fu">select</span>(country, lifeExp, latitude, dist_from_equator))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 4
   country     lifeExp latitude dist_from_equator
@@ -759,12 +766,12 @@ $ climate_zone  &lt;chr&gt; "Arid", "Temperate", "Arid", "Tropical", "Temperate"
 <section id="solution-add-more-complex-column" class="slide level2">
 <h2>SOLUTION: Add More Complex Column</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href=""></a>joined <span class="ot">&lt;-</span> joined <span class="sc">|&gt;</span></span>
-<span id="cb34-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb34-3"><a href=""></a>    <span class="at">dist_from_equator =</span> <span class="fu">abs</span>(latitude),</span>
-<span id="cb34-4"><a href=""></a>    <span class="at">equator_zone =</span> <span class="fu">classify_equator_zone</span>(dist_from_equator))</span>
-<span id="cb34-5"><a href=""></a></span>
-<span id="cb34-6"><a href=""></a><span class="fu">write_csv</span>(joined, <span class="st">"data/processed/final_gapminder_country_attributes_clean.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href=""></a>joined <span class="ot">&lt;-</span> joined <span class="sc">|&gt;</span></span>
+<span id="cb35-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb35-3"><a href=""></a>    <span class="at">dist_from_equator =</span> <span class="fu">abs</span>(latitude),</span>
+<span id="cb35-4"><a href=""></a>    <span class="at">equator_zone =</span> <span class="fu">classify_equator_zone</span>(dist_from_equator))</span>
+<span id="cb35-5"><a href=""></a></span>
+<span id="cb35-6"><a href=""></a><span class="fu">write_csv</span>(joined, <span class="st">"data/processed/final_gapminder_country_attributes_clean.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><br></p>
 <ul>
@@ -791,12 +798,12 @@ $ climate_zone  &lt;chr&gt; "Arid", "Temperate", "Arid", "Tropical", "Temperate"
 <section id="solution-plot-the-data" class="slide level2">
 <h2>SOLUTION: Plot the data</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href=""></a><span class="fu">plot</span>(</span>
-<span id="cb35-2"><a href=""></a>  joined<span class="sc">$</span>dist_from_equator, joined<span class="sc">$</span>lifeExp,</span>
-<span id="cb35-3"><a href=""></a>  <span class="at">xlab =</span> <span class="st">"Distance from equator (degrees latitude)"</span>,</span>
-<span id="cb35-4"><a href=""></a>  <span class="at">ylab =</span> <span class="st">"Life expectancy (years)"</span>,</span>
-<span id="cb35-5"><a href=""></a>  <span class="at">main =</span> <span class="st">"Life Expectancy Is Higher Farther from the Equator"</span></span>
-<span id="cb35-6"><a href=""></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href=""></a><span class="fu">plot</span>(</span>
+<span id="cb36-2"><a href=""></a>  joined<span class="sc">$</span>dist_from_equator, joined<span class="sc">$</span>lifeExp,</span>
+<span id="cb36-3"><a href=""></a>  <span class="at">xlab =</span> <span class="st">"Distance from equator (degrees latitude)"</span>,</span>
+<span id="cb36-4"><a href=""></a>  <span class="at">ylab =</span> <span class="st">"Life expectancy (years)"</span>,</span>
+<span id="cb36-5"><a href=""></a>  <span class="at">main =</span> <span class="st">"Life Expectancy Is Higher Farther from the Equator"</span></span>
+<span id="cb36-6"><a href=""></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="r4_project_workflow_files/figure-revealjs/unnamed-chunk-14-1.png" width="960" class="r-stretch"><ul>
@@ -814,19 +821,19 @@ $ climate_zone  &lt;chr&gt; "Arid", "Temperate", "Arid", "Tropical", "Temperate"
 </section>
 <section id="what-else-is-left" class="slide level2">
 <h2>What else is left?</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode numberSource no-scroll number-lines code-with-copy"><code class="sourceCode"><span id="cb36-1"><a href=""></a>my-project/</span>
-<span id="cb36-2"><a href=""></a>├── my-project.Rproj</span>
-<span id="cb36-3"><a href=""></a>├── data/</span>
-<span id="cb36-4"><a href=""></a>│   ├── raw/</span>
-<span id="cb36-5"><a href=""></a>│   └── processed/</span>
-<span id="cb36-6"><a href=""></a>├── R/</span>
-<span id="cb36-7"><a href=""></a>│   └── functions.R</span>
-<span id="cb36-8"><a href=""></a>├── scripts/</span>
-<span id="cb36-9"><a href=""></a>│   ├── 1_clean.R</span>
-<span id="cb36-10"><a href=""></a>│   ├── 2_transform.R</span>
-<span id="cb36-11"><a href=""></a>│   └── 3_plots.R</span>
-<span id="cb36-12"><a href=""></a>├── report_simple.Rmd</span>
-<span id="cb36-13"><a href=""></a>└── run_all.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode numberSource no-scroll number-lines code-with-copy"><code class="sourceCode"><span id="cb37-1"><a href=""></a>my-project/</span>
+<span id="cb37-2"><a href=""></a>├── my-project.Rproj</span>
+<span id="cb37-3"><a href=""></a>├── data/</span>
+<span id="cb37-4"><a href=""></a>│   ├── raw/</span>
+<span id="cb37-5"><a href=""></a>│   └── processed/</span>
+<span id="cb37-6"><a href=""></a>├── R/</span>
+<span id="cb37-7"><a href=""></a>│   └── functions.R</span>
+<span id="cb37-8"><a href=""></a>├── scripts/</span>
+<span id="cb37-9"><a href=""></a>│   ├── 1_clean.R</span>
+<span id="cb37-10"><a href=""></a>│   ├── 2_transform.R</span>
+<span id="cb37-11"><a href=""></a>│   └── 3_plots.R</span>
+<span id="cb37-12"><a href=""></a>├── report_simple.Rmd</span>
+<span id="cb37-13"><a href=""></a>└── run_all.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="what-else-is-left-1" class="slide level2">
 <h2>What else is left?</h2>
@@ -850,11 +857,11 @@ $ climate_zone  &lt;chr&gt; "Arid", "Temperate", "Arid", "Tropical", "Temperate"
 <h2>DEMO: Run all the scripts</h2>
 <p>Create a file called <code>run_all.R</code>, paste in the following code and save the file:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href=""></a><span class="fu">source</span>(<span class="st">"R/functions.R"</span>)</span>
-<span id="cb37-2"><a href=""></a><span class="fu">source</span>(<span class="st">"scripts/1_clean.R"</span>)</span>
-<span id="cb37-3"><a href=""></a><span class="fu">source</span>(<span class="st">"scripts/2_transform.R"</span>)</span>
-<span id="cb37-4"><a href=""></a><span class="fu">source</span>(<span class="st">"scripts/3_plot.R"</span>)</span>
-<span id="cb37-5"><a href=""></a>rmarkdown<span class="sc">::</span><span class="fu">render</span>(<span class="st">"report_simple.Rmd"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href=""></a><span class="fu">source</span>(<span class="st">"R/functions.R"</span>)</span>
+<span id="cb38-2"><a href=""></a><span class="fu">source</span>(<span class="st">"scripts/1_clean.R"</span>)</span>
+<span id="cb38-3"><a href=""></a><span class="fu">source</span>(<span class="st">"scripts/2_transform.R"</span>)</span>
+<span id="cb38-4"><a href=""></a><span class="fu">source</span>(<span class="st">"scripts/3_plot.R"</span>)</span>
+<span id="cb38-5"><a href=""></a>rmarkdown<span class="sc">::</span><span class="fu">render</span>(<span class="st">"report_simple.Rmd"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="final-step-run-it-for-real" class="slide level2">
