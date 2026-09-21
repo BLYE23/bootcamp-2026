@@ -53,6 +53,8 @@ Your code should be **broken down into separate scripts by job** — one script 
 
 Place the data files `nys_schools.csv` and `nys_acs.csv` in your `data/raw/` folder, then read them into R using `read_csv()`. These data come from two different sources: one is data on *schools* in New York state from the [New York State Department of Education](http://data.nysed.gov/downloads.php), and the other is data on *counties* from the American Communities Survey from the US Census Bureau. Review the codebook file so that you know what each variable name means in each dataset.
 
+Link to data: https://drive.google.com/drive/folders/1DcWIvLj2motQ5Nkfvjo6GFLcetfvssVq?usp=share_link
+
 #### Task 2: Explore your data
 
 Getting to know your data is a critical part of data analysis. Take the time to explore the structure of the two dataframes you have imported — `glimpse()` is a good place to start. What types of variables are there? Is there any missing data? How can you tell? What else do you notice about the data?
