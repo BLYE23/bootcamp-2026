@@ -9,6 +9,6 @@
 /.quarto/
 *_cache/
 
-#bootcamp final project data
-**/data/processed
+# bootcamp final project data
+**/data/processed/
 **/data/raw/nys_schools.csv
