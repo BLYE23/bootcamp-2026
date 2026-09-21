@@ -99,15 +99,27 @@ For example:
 
 In your `.Rmd` notebook, walk through your process and present your key tables and plots, along with a short written takeaway for each of the department's original questions.
 
+Be sure to knit or render your `.Rmd` notebook into an `.html` file that others can easily view.
+
+Add a `README.md` file to your R project that explains the contents of your folder.
+
 ---
 
 ### Step 3: Github Submission
 
-#### 1. Save your project within your forked repo
+#### 1. Make sure your forked repo is up to date with the class repo
 
-When you have completed the exercise, save your entire project folder (`.Rproj`, `data/`, `R/`, `scripts/`, `.Rmd`, `run_all.R`) in the `submissions` folder of your forked repo, inside a folder named using this convention (`snake_case`, matching R naming best practices): `final_r_exercise_lastname_firstname/`.
+`git pull upstream main`
 
-#### 2. Create a pull request
+#### 2. Save your project within your forked repo
+
+When you have completed the exercise, save your entire project folder (`.Rproj`, `data/`, `scripts/`, `.Rmd`, `.html`, `run_all.R`, `README.md`) in the `submissions` folder of your forked repo, inside a folder named using this convention (`snake_case`, matching R naming best practices): `final_r_exercise_lastname_firstname/`.
+
+#### 3. Push your changes up to your forked repo
+
+`git push origin main`
+
+#### 4. Create a pull request
 
 Create a pull request to submit your folder to the base repo that lives in the MLDS organization. Make sure your project folder is in the `submissions` folder, and then create a pull request that asks to merge changes from your forked repo to the base repo.
 
