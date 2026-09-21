@@ -41,7 +41,6 @@ Rather than working out of a single script, set this up the way we did in Sessio
 - Create a new R Project (`.Rproj`)
 - Set up the standard project structure:
   - `data/raw/` and `data/processed/`
-  - `R/` for any helper functions
   - `scripts/` for your numbered analysis scripts (e.g. `1_clean.R`, `2_transform.R`, `3_analyze.R`, `4_plot.R`)
   - a notebook (`.Rmd`) to document and present your findings
   - a `run_all.R` script that sources everything in order
